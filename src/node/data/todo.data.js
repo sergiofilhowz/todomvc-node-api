@@ -5,27 +5,44 @@
  *
  * Check saphyre-data if you want to understand more about this module
  */
-module.exports = function sampleModel(SaphyreData, models) {
+module.exports = function todoModel(SaphyreData, models) {
     'use strict';
 
-    var Sample = models.Sample,
-        model = SaphyreData.createModel(Sample);
+    var Todo = models.Todo,
+        model = SaphyreData.createModel(Todo);
 
     this.list = list;
+    this.get = get;
 
     model.projection('list', {
         '$id' : 'id',
-        'name' : 'name'
+        'title' : 'title',
+        'completed' : 'completed'
     });
 
-    model.sort('creation', {
+    model.criteria('id', {
+        name : 'value',
+        property : '$id',
+        operator : SaphyreData.OPERATOR.EQUAL
+    });
+
+    model.sort('recent', {
         '$id' : 'ASC'
     });
 
     function list() {
         return model.list({
             projection : 'list',
-            sort : 'creation'
+            sort : 'recent'
+        });
+    }
+
+    function get(id) {
+        return model.single({
+            projection : 'list',
+            criteria : {
+                id : { value : id }
+            }
         });
     }
 
